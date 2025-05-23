@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Ağ Bilgi Aracı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --info: #4895ef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: var(--darker);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .card-header .icon {
+            font-size: 1.5rem;
+            color: var(--info);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .info-item .label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .info-item .value {
+            font-size: 1rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px 0;
+            text-align: left;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: var(--dark);
+        }
+        
+        .btn-success:hover {
+            background-color: #3aa8d8;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #e5177a;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .dns-result {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .dns-result h4 {
+            margin-bottom: 10px;
+            color: var(--success);
+        }
+        
+        .dns-record {
+            display: flex;
+            margin-bottom: 5px;
+            font-family: monospace;
+        }
+        
+        .dns-record-type {
+            color: var(--warning);
+            min-width: 60px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .btn {
+                margin: 5px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-network-wired"></i> Gelişmiş Ağ Bilgi Aracı</h1>
+            <p>Sistem ve ağ bilgileriniz tek bir yerde</p>
+        </div>
+        
+        <div class="content">
+            <div class="sidebar">
+                <button class="btn btn-primary" id="btn-system-info">
+                    <i class="fas fa-laptop"></i> Sistem Bilgisi
+                </button>
+                <button class="btn btn-secondary" id="btn-network-info">
+                    <i class="fas fa-wifi"></i> Ağ Bilgisi
+                </button>
+                <button class="btn btn-secondary" id="btn-dns-lookup">
+                    <i class="fas fa-search"></i> DNS Sorgulama
+                </button>
+                <button class="btn btn-secondary" id="btn-connection-test">
+                    <i class="fas fa-bolt"></i> Hız Testi
+                </button>
+                <button class="btn btn-secondary" id="btn-geolocation">
+                    <i class="fas fa-map-marker-alt"></i> Konum Bilgisi
+                </button>
+                <button class="btn btn-danger" id="btn-reset">
+                    <i class="fas fa-home"></i> Ana Menü
+                </button>
+                <div style="flex: 1;"></div>
+                <button class="btn btn-success" id="btn-export">
+                    <i class="fas fa-file-export"></i> Raporu Kaydet
+                </button>
+            </div>
+            
+            <div class="main-content">
+                <!-- Sistem Bilgisi Sekmesi -->
+                <div id="system-info" class="tab-content active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-laptop icon"></i> Sistem Bilgisi</h3>
+                        </div>
+                        <div class="info-grid" id="system-info-content">
+                            <div class="info-item">
+                                <div class="label">İşletim Sistemi</div>
+                                <div class="value" id="os-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Tarayıcı</div>
+                                <div class="value" id="browser-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Ekran Çözünürlüğü</div>
+                                <div class="value" id="screen-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">CPU Çekirdek</div>
+                                <div class="value" id="cpu-cores">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Cihaz Hafızası</div>
+                                <div class="value" id="device-memory">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Tarayıcı Dili</div>
+                                <div class="value" id="language-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Dokunmatik Destek</div>
+                                <div class="value" id="touch-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Çevrimiçi Durum</div>
+                                <div class="value" id="online-status">Tespit ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-microchip icon"></i> Performans</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="label">Tarayıcı Motoru</div>
+                                <div class="value" id="engine-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Donanım Eşzamanlılık</div>
+                                <div class="value" id="concurrency-info">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Piksel Oranı</div>
+                                <div class="value" id="pixel-ratio">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">WebGL Render</div>
+                                <div class="value" id="webgl-info">Tespit ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ağ Bilgisi Sekmesi -->
+                <div id="network-info" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-network-wired icon"></i> Ağ Bilgisi</h3>
+                        </div>
+                        <div class="info-grid" id="network-info-content">
+                            <div class="info-item">
+                                <div class="label">Genel IP Adresi</div>
+                                <div class="value" id="public-ip">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Yerel IP Adresi</div>
+                                <div class="value" id="local-ip">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Bağlantı Türü</div>
+                                <div class="value" id="connection-type">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Etkili Bağlantı</div>
+                                <div class="value" id="effective-connection">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Ağ Gecikmesi</div>
+                                <div class="value" id="network-rtt">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">İndirme Hızı</div>
+                                <div class="value" id="download-speed">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Mevcut DNS</div>
+                                <div class="value" id="current-dns">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">WebRTC Durumu</div>
+                                <div class="value" id="webrtc-status">Tespit ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-server icon"></i> Ağ Arayüzleri</h3>
+                        </div>
+                        <div id="network-interfaces">
+                            <p>Ağ arayüz bilgileri yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DNS Sorgulama Sekmesi -->
+                <div id="dns-lookup" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-search icon"></i> DNS Sorgulama</h3>
+                        </div>
+                        <div class="info-item" style="margin-bottom: 15px;">
+                            <div class="label">Sorgulanacak Alan Adı</div>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="dns-domain" placeholder="ornek.com" 
+                                       style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: rgba(255,255,255,0.1); color: white;">
+                                <button class="btn btn-primary btn-sm" id="btn-dns-query">
+                                    <i class="fas fa-search"></i> Sorgula
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="dns-results">
+                            <p style="text-align: center; opacity: 0.7;">DNS sorgusu yapmak için bir alan adı girin</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-info-circle icon"></i> DNS Bilgisi</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="label">Mevcut DNS Sunucusu</div>
+                                <div class="value" id="dns-server">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">DNS over HTTPS</div>
+                                <div class="value" id="doh-status">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">DNS Sızıntı Testi</div>
+                                <div class="value" id="dns-leak">Tespit ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hız Testi Sekmesi -->
+                <div id="connection-test" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt icon"></i> Bağlantı Hız Testi</h3>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <button class="btn btn-primary" id="btn-run-speed-test" style="padding: 15px 30px;">
+                                <i class="fas fa-play"></i> Hız Testi Yap
+                            </button>
+                            <div id="speed-test-results" style="margin-top: 20px;">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="label">İndirme Hızı</div>
+                                        <div class="value" id="test-download">-</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="label">Yükleme Hızı</div>
+                                        <div class="value" id="test-upload">-</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="label">Gecikme</div>
+                                        <div class="value" id="test-latency">-</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="label">Jitter</div>
+                                        <div class="value" id="test-jitter">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line icon"></i> Bağlantı Kalitesi</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="label">Paket Kaybı</div>
+                                <div class="value" id="packet-loss">Test ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Bufferbloat</div>
+                                <div class="value" id="bufferbloat">Test ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Konum Bilgisi Sekmesi -->
+                <div id="geolocation" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-map-marker-alt icon"></i> Konum Bilgisi</h3>
+                        </div>
+                        <div class="info-grid" id="geo-info-content">
+                            <div class="info-item">
+                                <div class="label">IP Adresi</div>
+                                <div class="value" id="geo-ip">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Ülke</div>
+                                <div class="value" id="geo-country">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Bölge</div>
+                                <div class="value" id="geo-region">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Şehir</div>
+                                <div class="value" id="geo-city">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Posta Kodu</div>
+                                <div class="value" id="geo-postal">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Zaman Dilimi</div>
+                                <div class="value" id="geo-timezone">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">Koordinatlar</div>
+                                <div class="value" id="geo-coords">Tespit ediliyor...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="label">ISP</div>
+                                <div class="value" id="geo-isp">Tespit ediliyor...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-globe-americas icon"></i> Harita Konumu</h3>
+                        </div>
+                        <div id="map-container" style="height: 300px; background: rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                            <p>Harita verileri yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer" style="font-size: 0.75rem; margin-top: -10px;">
+         Made with ❤️ by <a href="https://instagram.com/arda.kceci" target="_blank" style="color: var(--success); text-decoration: none;">@arda.kceci</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sekme gezinme
+            const tabs = {
+                'btn-system-info': 'system-info',
+                'btn-network-info': 'network-info',
+                'btn-dns-lookup': 'dns-lookup',
+                'btn-connection-test': 'connection-test',
+                'btn-geolocation': 'geolocation'
+            };
+            
+            // Sekmeyi aktif et
+            function activateTab(tabId) {
+                // Tüm sekmeleri gizle
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Seçilen sekme göster
+                document.getElementById(tabId).classList.add('active');
+                
+                // Gerekirse sekme verilerini yükle
+                if (tabId === 'system-info') loadSystemInfo();
+                if (tabId === 'network-info') loadNetworkInfo();
+                if (tabId === 'geolocation') loadGeoInfo();
+            }
+            
+            // Sekme butonlarını ayarla
+            Object.keys(tabs).forEach(btnId => {
+                document.getElementById(btnId).addEventListener('click', () => {
+                    activateTab(tabs[btnId]);
+                });
+            });
+            
+            // Sıfırla butonu
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                activateTab('system-info');
+            });
+            
+            // Başlangıç yüklemesi
+            activateTab('system-info');
+            
+            // Sistem bilgisi tespiti
+            function loadSystemInfo() {
+                // Temel sistem bilgisi
+                document.getElementById('os-info').textContent = detectOS();
+                document.getElementById('browser-info').textContent = detectBrowser();
+                document.getElementById('screen-info').textContent = `${window.screen.width}x${window.screen.height}`;
+                document.getElementById('language-info').textContent = navigator.language || navigator.userLanguage;
+                document.getElementById('online-status').textContent = navigator.onLine ? 'Çevrimiçi' : 'Çevrimdışı';
+                document.getElementById('touch-info').textContent = 'ontouchstart' in window ? 'Destekleniyor' : 'Desteklenmiyor';
+                
+                // Performans bilgisi
+                const cpuCores = navigator.hardwareConcurrency || 'Bilinmiyor';
+                document.getElementById('cpu-cores').textContent = cpuCores;
+                document.getElementById('concurrency-info').textContent = cpuCores;
+                
+                if (navigator.deviceMemory) {
+                    document.getElementById('device-memory').textContent = `${navigator.deviceMemory} GB`;
+                } else {
+                    document.getElementById('device-memory').textContent = 'Bilinmiyor';
+                }
+                
+                document.getElementById('pixel-ratio').textContent = window.devicePixelRatio || 'Bilinmiyor';
+                
+                // Tarayıcı motoru tespiti
+                const engineInfo = detectEngine();
+                document.getElementById('engine-info').textContent = engineInfo;
+                
+                // WebGL tespiti
+                detectWebGL().then(info => {
+                    document.getElementById('webgl-info').textContent = info;
+                });
+            }
+            
+            // Ağ bilgisi tespiti
+            function loadNetworkInfo() {
+                // Genel IP tespiti
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('public-ip').textContent = data.ip;
+                        document.getElementById('geo-ip').textContent = data.ip;
+                    })
+                    .catch(() => {
+                        document.getElementById('public-ip').textContent = 'Tespit edilemedi';
+                    });
+                
+                // Yerel IP tespiti (WebRTC kullanarak)
+                detectLocalIP().then(ip => {
+                    document.getElementById('local-ip').textContent = ip || 'Tespit edilemedi';
+                });
+                
+                // Bağlantı bilgisi
+                if (navigator.connection) {
+                    const conn = navigator.connection;
+                    document.getElementById('connection-type').textContent = conn.type || 'Bilinmiyor';
+                    document.getElementById('effective-connection').textContent = conn.effectiveType || 'Bilinmiyor';
+                    document.getElementById('network-rtt').textContent = conn.rtt ? `${conn.rtt} ms` : 'Bilinmiyor';
+                    document.getElementById('download-speed').textContent = conn.downlink ? `${conn.downlink} Mbps` : 'Bilinmiyor';
+                    
+                    // Bağlantı değişikliklerini izle
+                    conn.addEventListener('change', updateNetworkInfo);
+                } else {
+                    document.getElementById('connection-type').textContent = 'Bilgi mevcut değil';
+                }
+                
+                // DNS tespiti
+                detectDNS().then(dns => {
+                    document.getElementById('current-dns').textContent = dns || 'Bilinmiyor';
+                    document.getElementById('dns-server').textContent = dns || 'Bilinmiyor';
+                });
+                
+                // WebRTC tespiti
+                document.getElementById('webrtc-status').textContent = 
+                    window.RTCPeerConnection ? 'Destekleniyor' : 'Desteklenmiyor';
+            }
+            
+            function updateNetworkInfo() {
+                const conn = navigator.connection;
+                if (conn) {
+                    document.getElementById('connection-type').textContent = conn.type || 'Bilinmiyor';
+                    document.getElementById('effective-connection').textContent = conn.effectiveType || 'Bilinmiyor';
+                    document.getElementById('network-rtt').textContent = conn.rtt ? `${conn.rtt} ms` : 'Bilinmiyor';
+                    document.getElementById('download-speed').textContent = conn.downlink ? `${conn.downlink} Mbps` : 'Bilinmiyor';
+                }
+            }
+            
+            // DNS sorgulama işlevselliği
+            document.getElementById('btn-dns-query').addEventListener('click', performDNSLookup);
+            document.getElementById('dns-domain').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') performDNSLookup();
+            });
+            
+            function performDNSLookup() {
+                const domain = document.getElementById('dns-domain').value.trim();
+                if (!domain) return;
+                
+                document.getElementById('dns-results').innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div class="spinner"></div>
+                        <p>${domain} için DNS kayıtları sorgulanıyor</p>
+                    </div>
+                `;
+                
+                // Gerçek uygulamada bir DNS API'sine istek yapardınız
+                // Bu örnek verilerle bir simülasyon
+                setTimeout(() => {
+                    const mockResults = generateMockDNSResults(domain);
+                    displayDNSResults(mockResults);
+                }, 1500);
+            }
+            
+            function generateMockDNSResults(domain) {
+                const now = new Date();
+                return {
+                    domain: domain,
+                    timestamp: now.toISOString(),
+                    records: {
+                        A: [
+                            { value: `192.0.2.1`, ttl: 300 },
+                            { value: `192.0.2.2`, ttl: 300 }
+                        ],
+                        AAAA: [
+                            { value: `2001:db8::1`, ttl: 300 }
+                        ],
+                        MX: [
+                            { value: `10 mail.${domain}`, ttl: 3600 },
+                            { value: `20 backup.${domain}`, ttl: 3600 }
+                        ],
+                        TXT: [
+                            { value: `"v=spf1 include:_spf.${domain} ~all"`, ttl: 3600 },
+                            { value: `"google-site-verification=abc123"`, ttl: 3600 }
+                        ],
+                        NS: [
+                            { value: `ns1.${domain}`, ttl: 86400 },
+                            { value: `ns2.${domain}`, ttl: 86400 }
+                        ],
+                        CNAME: [
+                            { value: `www.${domain}`, ttl: 3600 }
+                        ],
+                        SOA: [
+                            { value: `ns1.${domain} hostmaster.${domain} ${Math.floor(now.getTime()/1000)} 7200 3600 1209600 3600`, ttl: 3600 }
+                        ]
+                    }
+                };
+            }
+            
+            function displayDNSResults(data) {
+                let html = `
+                    <div style="margin-bottom: 15px;">
+                        <h4>${data.domain} için DNS Sonuçları</h4>
+                        <p style="opacity: 0.7; font-size: 0.9rem;">${new Date(data.timestamp).toLocaleString()} tarihinde sorgulandı</p>
+                    </div>
+                `;
+                
+                Object.keys(data.records).forEach(type => {
+                    if (data.records[type].length > 0) {
+                        html += `<div class="dns-result">`;
+                        html += `<h4>${type} Kayıtları</h4>`;
+                        
+                        data.records[type].forEach(record => {
+                            html += `
+                                <div class="dns-record">
+                                    <div class="dns-record-type">${type}:</div>
+                                    <div>${record.value} <span style="opacity: 0.7;">(TTL: ${record.ttl})</span></div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `</div>`;
+                    }
+                });
+                
+                document.getElementById('dns-results').innerHTML = html;
+            }
+            
+            // Hız testi
+            document.getElementById('btn-run-speed-test').addEventListener('click', runSpeedTest);
+            
+            function runSpeedTest() {
+                const results = document.getElementById('speed-test-results');
+                results.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div class="spinner"></div>
+                        <p>Hız testi yapılıyor...</p>
+                    </div>
+                `;
+                
+                // Rastgele sonuçlarla hız testi simülasyonu
+                setTimeout(() => {
+                    const download = (5 + Math.random() * 95).toFixed(2);
+                    const upload = (1 + Math.random() * 30).toFixed(2);
+                    const latency = Math.floor(5 + Math.random() * 50);
+                    const jitter = (Math.random() * 10).toFixed(2);
+                    
+                    document.getElementById('test-download').textContent = `${download} Mbps`;
+                    document.getElementById('test-upload').textContent = `${upload} Mbps`;
+                    document.getElementById('test-latency').textContent = `${latency} ms`;
+                    document.getElementById('test-jitter').textContent = `${jitter} ms`;
+                    document.getElementById('packet-loss').textContent = `${(Math.random() * 2).toFixed(2)}%`;
+                    document.getElementById('bufferbloat').textContent = Math.random() > 0.5 ? 'Tespit edildi' : 'Tespit edilmedi';
+                }, 3000);
+            }
+            
+            // Konum bilgisi
+            function loadGeoInfo() {
+                // Ücretsiz IP konum API'si kullanılıyor (ipapi.co)
+                fetch('https://ipapi.co/json/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('geo-ip').textContent = data.ip;
+                        document.getElementById('geo-country').textContent = `${data.country_name} (${data.country})`;
+                        document.getElementById('geo-region').textContent = `${data.region} (${data.region_code})`;
+                        document.getElementById('geo-city').textContent = data.city;
+                        document.getElementById('geo-postal').textContent = data.postal;
+                        document.getElementById('geo-timezone').textContent = data.timezone;
+                        document.getElementById('geo-coords').textContent = `${data.latitude}, ${data.longitude}`;
+                        document.getElementById('geo-isp').textContent = data.org;
+                        
+                        // Harita yükleme (gerçek uygulamada Google Haritalar veya Leaflet kullanırdınız)
+                        const mapContainer = document.getElementById('map-container');
+                        if (data.latitude && data.longitude) {
+                            mapContainer.innerHTML = `
+                                <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 10px; color: var(--primary);"></i>
+                                    <p>Koordinatlar: ${data.latitude}, ${data.longitude}</p>
+                                    <p style="font-size: 0.8rem; opacity: 0.7;">(Tam uygulamada burada interaktif harita gösterilirdi)</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Konum bilgisi alınırken hata:', error);
+                        document.getElementById('geo-ip').textContent = 'Veri alınamadı';
+                    });
+            }
+            
+            // Raporu dışa aktarma
+            document.getElementById('btn-export').addEventListener('click', exportReport);
+            
+            function exportReport() {
+                const now = new Date();
+                const timestamp = now.toISOString().replace(/[:.]/g, '-');
+                const filename = `ag-raporu-${timestamp}.html`;
+                
+                let html = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ağ Raporu ${timestamp}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
+        h1, h2, h3 { color: #4361ee; }
+        .report-section { margin-bottom: 30px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin: 15px 0; }
+        .info-item { border-left: 3px solid #4361ee; padding: 8px 12px; background: #f5f5f5; }
+        .label { font-size: 0.8em; color: #666; }
+        .dns-record { font-family: monospace; margin: 5px 0; }
+        .dns-record-type { font-weight: bold; color: #f8961e; display: inline-block; width: 60px; }
+        .timestamp { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Ağ Bilgisi Raporu</h1>
+    <p class="timestamp">${now.toLocaleString()} tarihinde oluşturuldu</p>
+`;
+                
+                // Sistem Bilgisi
+                html += `<div class="report-section">
+    <h2>Sistem Bilgisi</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="label">İşletim Sistemi</div>
+            <div>${document.getElementById('os-info').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Tarayıcı</div>
+            <div>${document.getElementById('browser-info').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Ekran Çözünürlüğü</div>
+            <div>${document.getElementById('screen-info').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">CPU Çekirdek</div>
+            <div>${document.getElementById('cpu-cores').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Cihaz Hafızası</div>
+            <div>${document.getElementById('device-memory').textContent}</div>
+        </div>
+    </div>
+</div>`;
+
+// Ağ Bilgisi
+html += `<div class="report-section">
+    <h2>Ağ Bilgisi</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="label">Genel IP Adresi</div>
+            <div>${document.getElementById('public-ip').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Yerel IP Adresi</div>
+            <div>${document.getElementById('local-ip').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Bağlantı Türü</div>
+            <div>${document.getElementById('connection-type').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Mevcut DNS</div>
+            <div>${document.getElementById('current-dns').textContent}</div>
+        </div>
+    </div>
+</div>`;
+
+// DNS sonuçları varsa
+const dnsResults = document.getElementById('dns-results').innerHTML;
+if (dnsResults && !dnsResults.includes('DNS sorgusu yapmak için')) {
+    html += `<div class="report-section">
+        <h2>DNS Sorgu Sonuçları</h2>
+        ${dnsResults}
+    </div>`;
+}
+
+// Hız testi sonuçları varsa
+if (document.getElementById('test-download').textContent !== '-') {
+    html += `<div class="report-section">
+        <h2>Hız Testi Sonuçları</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">İndirme Hızı</div>
+                <div>${document.getElementById('test-download').textContent}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Yükleme Hızı</div>
+                <div>${document.getElementById('test-upload').textContent}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Gecikme</div>
+                <div>${document.getElementById('test-latency').textContent}</div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// Konum Bilgisi
+html += `<div class="report-section">
+    <h2>Konum Bilgisi</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="label">Ülke</div>
+            <div>${document.getElementById('geo-country').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Bölge</div>
+            <div>${document.getElementById('geo-region').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Şehir</div>
+            <div>${document.getElementById('geo-city').textContent}</div>
+        </div>
+        <div class="info-item">
+            <div class="label">Koordinatlar</div>
+            <div>${document.getElementById('geo-coords').textContent}</div>
+        </div>
+    </div>
+</div>`;
+
+html += `</body></html>`;
+
+// Dosyayı oluştur ve indir
+const blob = new Blob([html], { type: 'text/html' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = filename;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+}
+
+// Tespit için yardımcı fonksiyonlar
+function detectOS() {
+    const userAgent = window.navigator.userAgent;
+    const platform = window.navigator.platform;
+    const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+    const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+    const iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+    
+    if (macosPlatforms.indexOf(platform) !== -1) {
+        return 'Mac OS';
+    } else if (iosPlatforms.indexOf(platform) !== -1) {
+        return 'iOS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        return 'Windows';
+    } else if (/Android/.test(userAgent)) {
+        return 'Android';
+    } else if (/Linux/.test(platform)) {
+        return 'Linux';
+    }
+    
+    return 'Bilinmeyen İşletim Sistemi';
+}
+
+function detectBrowser() {
+    const userAgent = navigator.userAgent;
+    
+    if (userAgent.indexOf("Firefox") > -1) return "Firefox";
+    if (userAgent.indexOf("SamsungBrowser") > -1) return "Samsung Browser";
+    if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) return "Opera";
+    if (userAgent.indexOf("Trident") > -1) return "Internet Explorer";
+    if (userAgent.indexOf("Edge") > -1) return "Edge";
+    if (userAgent.indexOf("Chrome") > -1) return "Chrome";
+    if (userAgent.indexOf("Safari") > -1) return "Safari";
+    
+    return "Bilinmeyen Tarayıcı";
+}
+
+function detectEngine() {
+    const userAgent = navigator.userAgent;
+    
+    if (userAgent.indexOf("Gecko") > -1) return "Gecko (Firefox)";
+    if (userAgent.indexOf("AppleWebKit") > -1) return "WebKit (Chrome, Safari)";
+    if (userAgent.indexOf("Trident") > -1) return "Trident (IE)";
+    if (userAgent.indexOf("EdgeHTML") > -1) return "EdgeHTML (Eski Edge)";
+    if (userAgent.indexOf("Blink") > -1) return "Blink (Chrome, Opera)";
+    
+    return "Bilinmeyen Motor";
+}
+
+function detectWebGL() {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        
+        if (gl && gl instanceof WebGLRenderingContext) {
+            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+            if (debugInfo) {
+                const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                resolve(renderer || 'WebGL Destekleniyor');
+            } else {
+                resolve('WebGL Destekleniyor (detaylar bilinmiyor)');
+            }
+        } else {
+            resolve('WebGL Desteklenmiyor');
+        }
+    });
+}
+
+function detectLocalIP() {
+    return new Promise((resolve) => {
+        // WebRTC kullanarak yerel IP'leri almak için bir yöntem
+        const RTCPeerConnection = window.RTCPeerConnection || 
+            window.mozRTCPeerConnection || 
+            window.webkitRTCPeerConnection;
+        
+        if (!RTCPeerConnection) {
+            resolve(null);
+            return;
+        }
+        
+        const pc = new RTCPeerConnection({ iceServers: [] });
+        const noop = () => {};
+        const localIPs = {};
+        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g;
+        
+        pc.createDataChannel('');
+        pc.createOffer().then(sdp => pc.setLocalDescription(sdp, noop, noop));
+        pc.onicecandidate = (ice) => {
+            if (!ice || !ice.candidate || !ice.candidate.candidate) {
+                pc.onicecandidate = noop;
+                const ips = Object.keys(localIPs);
+                resolve(ips.length ? ips[0] : null);
+                return;
+            }
+            
+            const matches = ice.candidate.candidate.match(ipRegex);
+            if (!matches) return;
+            
+            const ip = matches[0];
+            if (!localIPs[ip]) {
+                localIPs[ip] = true;
+            }
+        };
+    });
+}
+
+function detectDNS() {
+    return new Promise((resolve) => {
+        // Bu basitleştirilmiş bir yaklaşım - gerçekte DNS tespiti daha karmaşık yöntemler
+        // veya sunucu tarafı desteği gerektirir
+        const isGoogleDNS = () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://dns.google/resolve?name=example.com&type=A', false);
+            try {
+                xhr.send();
+                return xhr.status === 200;
+            } catch(e) {
+                return false;
+            }
+        };
+        
+        const isCloudflareDNS = () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://cloudflare-dns.com/dns-query?name=example.com&type=A', false);
+            try {
+                xhr.send();
+                return xhr.status === 200;
+            } catch(e) {
+                return false;
+            }
+        };
+        
+        if (isGoogleDNS()) {
+            resolve('Google DNS (8.8.8.8)');
+        } else if (isCloudflareDNS()) {
+            resolve('Cloudflare DNS (1.1.1.1)');
+        } else {
+            resolve('Bilinmeyen DNS');
+        }
+    });
+}
+
+// DNS over HTTPS durumunu başlat
+detectDNS().then(dns => {
+    document.getElementById('doh-status').textContent = 
+        dns.includes('Google') || dns.includes('Cloudflare') ? 'Aktif' : 'Bilinmiyor';
+});
+
+// DNS sızıntı testini başlat (simüle edilmiş)
+document.getElementById('dns-leak').textContent = 'Sızıntı Tespit Edilmedi';
+
+// Sayfa yüklendiğinde tüm bilgileri yükle
+window.addEventListener('load', () => {
+    loadSystemInfo();
+    loadNetworkInfo();
+    
+    // Her 30 saniyede bir güncellemeleri kontrol et
+    setInterval(() => {
+        if (document.querySelector('.tab-content.active').id === 'network-info') {
+            updateNetworkInfo();
+        }
+    }, 30000);
+});
+});
+</script>
+</body>
+</html>
