@@ -19,7 +19,7 @@ Tarayıcı üzerinden çalışan, tamamen istemci taraflı (client-side) bir sis
 - GitHub Pages uyumlu
 
 ## 📁 Canlı Önizleme
-👉 [Demo Linki (GitHub Pages)](https://kullaniciadi.github.io/network-system-information)
+👉 [Demo Linki (GitHub Pages)](https://wek1d.github.io/network-system-information/)
 
 ## 👨‍💻 Geliştirici
 Made with ❤️ by [@arda.kceci](https://instagram.com/arda.kceci)
